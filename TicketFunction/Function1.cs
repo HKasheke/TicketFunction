@@ -35,6 +35,7 @@ namespace TicketFunction
             if (purchase == null)
             {
                 _logger.LogError("Failed to deserialize message");
+                return;
             }
 
             _logger.LogInformation($"Purchase: {purchase}");
@@ -49,14 +50,14 @@ namespace TicketFunction
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 await conn.OpenAsync(); // Note the ASYNC
-                var query = "INSERT INTO dbo.purchases (concertId, email, firstName, data, phone, quantity, creditCard, expiration, securityCode, address, city, province, postalCode, country) VALUES (@concertId, @email, @firstName, @data, @phone, @quantity, @creditCard, @expiration, @securityCode, @address, @city, @province, @postalCode, @country)";
+                var query = "INSERT INTO dbo.purchases (concertId, email, firstName, lastName, phone, quantity, creditCard, expiration, securityCode, address, city, province, postalCode, country) VALUES (@concertId, @email, @firstName, @lastName, @phone, @quantity, @creditCard, @expiration, @securityCode, @address, @city, @province, @postalCode, @country)";
                 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@concertId", purchase.ConcertId);
                     cmd.Parameters.AddWithValue("@email", purchase.Email);
                     cmd.Parameters.AddWithValue("@firstName", purchase.FirstName);
-                    cmd.Parameters.AddWithValue("@data", purchase.Data);
+                    cmd.Parameters.AddWithValue("@lastName", purchase.LastName);
                     cmd.Parameters.AddWithValue("@phone", purchase.Phone);
                     cmd.Parameters.AddWithValue("@quantity", purchase.Quantity);
                     cmd.Parameters.AddWithValue("@creditCard", purchase.CreditCard);
